@@ -25,7 +25,7 @@ export default function ResumeToJob() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const Backend_URL = "https://resume-to-job-matcher-52v9.onrender.com/";
+      const Backend_URL = "https://resume-to-job-matcher-52v9.onrender.com";
 
       const res = await fetch(`${Backend_URL}/match`, {
         method: "POST",
