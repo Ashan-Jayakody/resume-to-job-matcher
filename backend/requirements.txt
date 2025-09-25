@@ -7,5 +7,6 @@ APScheduler
 bs4
 requests 
 python-multipart
+python-dotenv
 
 
