@@ -27,7 +27,7 @@ export default function ResumeToJob() {
 
       const Backend_URL = "https://resume-to-job-matcher-52v9.onrender.com/";
 
-      const res = await fetch(`${BACKEND_URL}/match`, {
+      const res = await fetch(`${Backend_URL}/match`, {
         method: "POST",
         body: formData,
       });
