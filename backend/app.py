@@ -17,11 +17,7 @@ scheduler = BackgroundScheduler()
 # Allow react frontend to call the API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://resume-to-job-matcher.vercel.app/"
-        
-        
-        ],  # React dev server
+    allow_origins=["*"],  # React dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
