@@ -1,5 +1,6 @@
 import psycopg2
 from pathlib import Path
+from getDbConnection import get_db_connection
 
 # Skills list to check
 skill_keywords = [
@@ -17,7 +18,7 @@ def extract_skills(text: str):
 
 def match_jobs(user_skills: list):
     try:
-        conn = psycopg2.connect("dbname=jobs user=postgres password=admin123")
+        conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("SELECT title, link, description, company, location FROM jobs")
         jobs_list = cur.fetchall()

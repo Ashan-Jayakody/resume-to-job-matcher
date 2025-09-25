@@ -7,6 +7,9 @@ from pathlib import Path
 from webScrape import jobs_scrape_and_update
 from apscheduler.schedulers.background import BackgroundScheduler
 from jobMatch import extract_skills
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 scheduler = BackgroundScheduler()

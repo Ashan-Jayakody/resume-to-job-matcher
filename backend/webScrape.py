@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import psycopg2
+from getDbConnection import get_db_connection
 
 # Function for scrape jobs from web
 def jobs_scrape_and_update():
@@ -55,7 +56,7 @@ def jobs_scrape_and_update():
 
     try:
         #connection to theDB
-        conn = psycopg2.connect("dbname=jobs user=postgres password=admin123")
+        conn = get_db_connection()
         cur = conn.cursor()
 
         for job in jobs:
