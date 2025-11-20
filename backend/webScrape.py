@@ -101,4 +101,4 @@ def jobs_scrape_and_update():
         except:
             pass
 
-jobs_scrape_and_update()
+#jobs_scrape_and_update() //triggers immeadiate scraping after restart the backend

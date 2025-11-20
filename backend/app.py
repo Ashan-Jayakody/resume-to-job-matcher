@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# FIXED minutes keyword
+
 scheduler.add_job(jobs_scrape_and_update, "interval", minutes=720)
 scheduler.start()
 
