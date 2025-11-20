@@ -13,11 +13,12 @@ load_dotenv()
 
 app = FastAPI()
 scheduler = BackgroundScheduler()
-PERMANENT_VERCEL_ORIGIN = "https://resume-to-job-matcher.vercel.app"
+
 
 # List of all allowed origins
 origins = [
-    PERMANENT_VERCEL_ORIGIN,
+    "https://resume-to-job-matcher.vercel.app",  
+    "https://*.vercel.app",  
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:8000",
@@ -26,7 +27,13 @@ origins = [
 # Allow react frontend to call the API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Allows all Vercel deployments
+    allow_origins=[
+        "https://resume-to-job-matcher.vercel.app",
+        "http://localhost",
+        "http://localhost:3000",
+        "http://localhost:8000",
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -41,34 +48,52 @@ scheduler.start()
 
 @app.post("/upload")
 async def upload_resume(file: UploadFile = File(...)):
-    contents = await file.read()
+    try:
+        contents = await file.read()
 
-    if file.filename.endswith(".pdf"):
-        text = extract_text_from_pdf(contents)
-    elif file.filename.endswith(".docx"):
-        text = extract_text_from_doc(contents)
-    else:
-        return {"error":"only PDF or DOCX file supported"}
-    
-    return {"filename": file.filename, "extracted_text": text}
+        if file.filename.endswith(".pdf"):
+            text = extract_text_from_pdf(contents)
+        elif file.filename.endswith(".docx"):
+            text = extract_text_from_doc(contents)
+        else:
+            return {"error": "only PDF or DOCX file supported"}
+        
+        return {"filename": file.filename, "extracted_text": text}
+    except Exception as e:
+        print(f"Error in upload_resume: {e}")
+        return {"error": str(e)}, 500
 
 
 # Endpoint to both upload pdf/docx and match with jobs
 @app.post("/match")
 async def match_resume(file: UploadFile = File(...)):
-    contents = await file.read()
+    try:
+        contents = await file.read()
 
-    if file.filename.endswith(".pdf"):
-        text = extract_text_from_pdf(contents)
-    elif file.filename.endswith(".docx"):
-        text = extract_text_from_doc(contents)
-    else:
-        return {"error":"only PDF or DOCX file supported"}
-    
-    user_skills = extract_skills(text)
-    matches = match_jobs(user_skills)
+        if file.filename.endswith(".pdf"):
+            text = extract_text_from_pdf(contents)
+        elif file.filename.endswith(".docx"):
+            text = extract_text_from_doc(contents)
+        else:
+            return {"error": "only PDF or DOCX file supported"}
+        
+        user_skills = extract_skills(text)
+        matches = match_jobs(user_skills)
 
-    return{
-        "extracted_skills": user_skills,
-        "matches": matches
-    }
+        return {
+            "extracted_skills": user_skills,
+            "matches": matches
+        }
+    except Exception as e:
+        print(f"Error in match_resume: {e}")
+        return {"error": str(e)}, 500
+
+
+# Health check endpoint
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "Resume to Job Matcher API"}
+
+@app.on_event("shutdown")
+def shutdown_event():
+    scheduler.shutdown()
