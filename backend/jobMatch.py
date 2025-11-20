@@ -22,6 +22,7 @@ def match_jobs(user_skills: list):
         cur = conn.cursor()
         cur.execute("SELECT title, link, description, company, location FROM jobs")
         jobs_list = cur.fetchall()
+        print(jobs_list)
     except psycopg2.Error as e:
         print(f"Error fetch from table: {e}")
     finally:
