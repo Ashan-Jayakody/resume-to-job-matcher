@@ -1,22 +1,16 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from parses.pdf_parser import extract_text_from_pdf
 from parses.docx_parser import extract_text_from_doc
-from jobMatch import match_jobs
-from pathlib import Path
+from jobMatch import match_jobs, extract_skills
 from webScrape import jobs_scrape_and_update
 from apscheduler.schedulers.background import BackgroundScheduler
-from jobMatch import extract_skills
-from dotenv import load_dotenv
-
-load_dotenv()
+import sys
 
 app = FastAPI()
 scheduler = BackgroundScheduler()
 
-
-
-# Allow react frontend to call the API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -25,32 +19,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Run scrape function automatically for every 12 hrs
-scheduler.add_job(jobs_scrape_and_update, "interval", minuites = 1)
+# FIXED minutes keyword
+scheduler.add_job(jobs_scrape_and_update, "interval", minutes=720)
 scheduler.start()
 
-
-
-
-@app.post("/upload")
-async def upload_resume(file: UploadFile = File(...)):
-    try:
-        contents = await file.read()
-
-        if file.filename.endswith(".pdf"):
-            text = extract_text_from_pdf(contents)
-        elif file.filename.endswith(".docx"):
-            text = extract_text_from_doc(contents)
-        else:
-            return {"error": "only PDF or DOCX file supported"}
-        
-        return {"filename": file.filename, "extracted_text": text}
-    except Exception as e:
-        print(f"Error in upload_resume: {e}")
-        return {"error": str(e)}, 500
-
-
-# Endpoint to both upload pdf/docx and match with jobs
 @app.post("/match")
 async def match_resume(file: UploadFile = File(...)):
     try:
@@ -61,25 +33,24 @@ async def match_resume(file: UploadFile = File(...)):
         elif file.filename.endswith(".docx"):
             text = extract_text_from_doc(contents)
         else:
-            return {"error": "only PDF or DOCX file supported"}
-        
+            return JSONResponse(status_code=400, content={"error": "Only PDF or DOCX allowed"})
+
         user_skills = extract_skills(text)
         matches = match_jobs(user_skills)
+
+        # Debug
+        print("Extracted Skills:", user_skills, file=sys.stdout, flush=True)
+        print("Total Matches:", len(matches), file=sys.stdout, flush=True)
 
         return {
             "extracted_skills": user_skills,
             "matches": matches
         }
+
     except Exception as e:
-        print(f"Error in match_resume: {e}")
-        return {"error": str(e)}, 500
+        print("Error in match_resume:", e, file=sys.stdout, flush=True)
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
-
-# Health check endpoint
 @app.get("/")
 async def root():
-    return {"status": "ok", "message": "Resume to Job Matcher API"}
-
-@app.on_event("shutdown")
-def shutdown_event():
-    scheduler.shutdown()
+    return {"status": "ok"}
