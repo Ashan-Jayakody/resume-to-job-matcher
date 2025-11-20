@@ -20,7 +20,7 @@ all built with modern tech stack including React frontend, Python backend, and P
 
 ## 🌐Live Demo
 ### Quick Start - Try it live:
-1. Visit the live app on: https://resume-to-job-matcher-9qjx9n978-ashan-jayakodys-projects.vercel.app
+1. Visit the live app on: https://resume-to-job-matcher.vercel.app/
 2. Upload your resume in PDF or DOCX format
 3. Get instant job matches based on your skills.
 
@@ -35,7 +35,7 @@ all built with modern tech stack including React frontend, Python backend, and P
 The application is deployed using modern cloud platforms.
 + Frontend: Depoloyed on Vercel for optimal React performance.
 + Backend: Deployed on Render with automatic scaling.
-+ Database: PostgreSQL hosted on Render.
++ Database: PostgreSQL on Neon (integrated with Vercel).
 
 > [! TIP ]\
 > Deployment Architecture \
