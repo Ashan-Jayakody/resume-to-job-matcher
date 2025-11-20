@@ -24,16 +24,6 @@ def match_jobs(user_skills: list):
         cur.execute("SELECT title, link, description, company, location FROM jobs")
         jobs_list = cur.fetchall()
        
-        # ---------------- DEBUGGING ----------------
-        print("\n========== DEBUG: JOBS FETCHED ==========")
-        print(f"Total jobs fetched: {len(jobs_list)}")
-        for i, job in enumerate(jobs_list, start=1):
-            print(f"Job {i}: {job}")
-        print("=========================================\n")
-        # -----------------------------------------
-
-
-       
     except psycopg2.Error as e:
         print(f"Error fetch from table: {e}")
     finally:
