@@ -25,8 +25,11 @@ def match_jobs(user_skills: list):
     except psycopg2.Error as e:
         print(f"Error fetch from table: {e}")
     finally:
-        cur.close()
-        conn.close()
+        try:
+            if cur: cur.close()
+            if conn: conn.close()
+        except Exception:
+            pass
 
     result = []
     for job in jobs_list:
