@@ -13,11 +13,20 @@ load_dotenv()
 
 app = FastAPI()
 scheduler = BackgroundScheduler()
+PERMANENT_VERCEL_ORIGIN = "https://resume-to-job-matcher.vercel.app"
+
+# List of all allowed origins
+origins = [
+    PERMANENT_VERCEL_ORIGIN,
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8000",
+]
 
 # Allow react frontend to call the API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # React dev server
+    allow_origins=origins,  
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
