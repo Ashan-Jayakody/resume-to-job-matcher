@@ -26,7 +26,7 @@ app.add_middleware(
 )
 
 # Run scrape function automatically for every 12 hrs
-scheduler.add_job(jobs_scrape_and_update, "interval", hours =12)
+scheduler.add_job(jobs_scrape_and_update, "interval", minuites = 1)
 scheduler.start()
 
 
