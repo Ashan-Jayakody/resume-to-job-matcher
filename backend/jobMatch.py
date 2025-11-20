@@ -4,8 +4,9 @@ from getDbConnection import get_db_connection
 
 # Skills list to check
 skill_keywords = [
-    "python", "java", "sql", "react", "javascript", "css",
-    "django", "html", "c++", "node", "express", "mongodb", "designer", "sales"
+    "python", "java", "sql", "react", "javascript", "css","data analytics","power bi",
+    "django", "html", "c++", "node", "express", "mongodb", "designer", "sales","web developer","marketing",
+    "administration", "data entry", "accounting", "auditing", "audit", "logistics", "administrator"
 ]
 
 def extract_skills(text: str):
